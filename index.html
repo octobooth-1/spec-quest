@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spec Quest · The Idea Isles</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%233c704c'/%3E%3Cpath d='M16 3L20 12L29 16L20 20L16 29L12 20L3 16L12 12Z' fill='%23ffe4a0'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <canvas id="world" aria-label="Interactive 3D island. Move with WASD or arrow keys, click to walk, and press E to talk." tabindex="0"></canvas>
+  <div id="world-error" hidden role="alert"></div>
+  <div class="vignette"></div>
+  <header class="hud topbar">
+    <a class="brand" href="#" id="home" aria-label="Spec Quest home"><span class="brand-icon">✦</span><span>SPEC<span class="brand-light">QUEST</span><small>A LITTLE ADVENTURE. A BETTER PLAN.</small></span></a>
+    <div class="top-actions"><span id="shards" class="shards" title="Star shards found"><b>✦</b><span id="shard-count">0</span></span><span id="connection" class="connection">● Saved</span><button id="mute" class="glass-button icon" aria-label="Mute sounds">🔊</button><button id="journal-button" class="glass-button"><span>▤</span> Quest journal <kbd>J</kbd></button></div>
+  </header>
+  <div class="area-heading hud"><div class="eyebrow" id="area-eyebrow">YOUR ADVENTURE STARTS HERE</div><h1 id="area-name">The Idea Isles</h1><p id="area-subtitle">Big ideas. Small steps. A few helpful friends.</p></div>
+  <aside id="quest-panel" class="hud quest-panel">
+    <div class="eyebrow">YOUR QUEST <span id="quest-count">00 / 04</span></div>
+    <h2 id="plan-title">A plan worth exploring</h2>
+    <div id="quest-meter" class="quest-meter"><i></i></div>
+    <nav id="area-list" aria-label="Adventure chapters"></nav>
+    <div class="quest-footer"><span class="little-spark">✧</span><span id="quest-hint">Meet your guides. Find your direction.</span></div>
+  </aside>
+  <div id="markers" aria-label="Characters and portal"></div>
+  <aside class="hud compass" aria-label="Camera controls"><span class="compass-n">N</span><div class="compass-rose">✧</div><div class="camera-buttons"><button id="rotate-left" aria-label="Rotate camera left">↶</button><button id="camera-reset" aria-label="Reset camera">⌖</button><button id="rotate-right" aria-label="Rotate camera right">↷</button></div><button id="jump" class="jump-button" aria-label="Jump">JUMP</button><button id="dance" class="dance-button" aria-label="Dance">♪ DANCE</button></aside>
+  <section id="welcome" class="hud welcome">
+    <div class="welcome-badge">✦ &nbsp; A NEW KIND OF PLANNING</div>
+    <h2>Make a plan.<br>Find your path.</h2>
+    <p>Explore an idea with curious companions. Uncover assumptions, choose your path, and turn decisions into a real specification.</p>
+    <button class="primary" id="begin">Let's go exploring <span>→</span></button>
+    <small>No right answers. Just the right questions.</small>
+  </section>
+  <section id="objective" class="hud objective" hidden>
+    <div class="objective-icon">✦</div><div class="objective-copy"><div class="eyebrow" id="objective-label">CURRENT OBJECTIVE</div><strong id="objective-text">Meet your companions</strong><p id="objective-detail"></p><div id="objective-pips" class="pips"></div></div>
+    <button id="continue" class="primary" hidden>Enter portal <span>→</span></button>
+  </section>
+  <footer class="hud controls"><span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> move</span><i></i><span><kbd>Space</kbd> jump</span><i></i><span><kbd>E</kbd> talk · interact</span><i></i><span><kbd>X</kbd> dance</span><i></i><span>Click to walk · drag to spin</span><span class="autosave">✦ Hunt the star shards!</span></footer>
+  <div id="notice" role="status" aria-live="polite" hidden></div>
+  <button id="prompt" class="prompt" hidden><kbd>E</kbd><span></span></button>
+  <div id="reward" class="reward" role="status" aria-live="polite" hidden><div class="reward-icon" id="reward-icon"></div><div><div class="reward-eyebrow" id="reward-eyebrow"></div><strong id="reward-title"></strong><small id="reward-detail"></small></div><b id="reward-tag" class="reward-tag"></b></div>
+  <div id="title-card" class="title-card" hidden aria-hidden="true"><div class="title-burst"></div><div class="title-inner"><div id="title-eyebrow">WORLD 1</div><h2 id="title-name"></h2><p id="title-sub"></p></div></div>
+  <dialog id="start-dialog" class="modal">
+    <form id="start-form">
+      <button type="button" class="close" aria-label="Close">×</button>
+      <div class="dialog-illustration">✦</div><div class="eyebrow">PACK YOUR BIG IDEA</div>
+      <h2>Where shall we venture?</h2>
+      <p>Tell your companions what you'd like to plan. The agent will research it and build a world of meaningful decisions.</p>
+      <label for="brief">Your idea or planning brief</label>
+      <textarea id="brief" rows="5" maxlength="12000" required placeholder="I want to build a community garden app for my neighbourhood. Help me plan the MVP, understand the tradeoffs, and choose a technical approach…"></textarea>
+      <p class="fine-print">Research uses your current Copilot session and its available tools. Nothing is implemented until you ask.</p>
+      <button class="primary" type="submit">Build my adventure <span>✧</span></button>
+    </form>
+  </dialog>
+  <dialog id="npc-dialog" class="modal npc-dialog">
+    <button class="close" aria-label="Close">×</button>
+    <div class="npc-header"><div id="npc-avatar" class="npc-avatar">✦</div><div><div class="eyebrow" id="npc-role"></div><h2 id="npc-name"></h2></div><span class="dialog-badge">COMPANION</span></div>
+    <div class="dialog-tabs"><button class="active" id="decision-tab">Choose a path</button><button id="chat-tab">Ask your companion <span>↗</span></button></div>
+    <section id="decision-content">
+      <div class="assumption"><span>THE ASSUMPTION</span><p id="npc-assumption"></p></div>
+      <p id="npc-rationale"></p><div id="npc-sources" class="sources"></div>
+      <h3 id="npc-question"></h3><div id="choices" class="choices"></div>
+      <form id="custom-form" class="custom-form"><label for="custom">Or chart your own path</label><div><input id="custom" maxlength="3000" placeholder="Here's what I'd prefer…" required><button type="submit" aria-label="Save custom decision">→</button></div></form>
+      <div id="decision-saved" class="decision-saved" hidden></div>
+    </section>
+    <section id="chat-content" hidden><p class="chat-intro">Ask about the evidence, challenge an assumption, or explore a tradeoff. Your agent researches the answer; chatting does not choose an option.</p><div id="messages" aria-live="polite"></div><form id="chat-form"><label for="chat-input" class="sr-only">Question for your companion</label><textarea id="chat-input" rows="2" required maxlength="3000" placeholder="Why does this assumption matter?"></textarea><button class="primary" type="submit">Ask companion <span>↗</span></button></form></section>
+  </dialog>
+  <dialog id="journal" class="modal journal">
+    <button class="close" aria-label="Close">×</button><div class="eyebrow">COLLECTED ALONG THE WAY</div><h2>Your quest journal</h2>
+    <p>Every decision is saved with this session. The specification evolves when your agent researches the next area.</p>
+    <a class="primary export" href="./export" download>Download specification <span>↓</span></a>
+    <div id="journal-body"></div>
+  </dialog>
+  <dialog id="portal-dialog" class="modal">
+    <button class="close" aria-label="Close">×</button><div class="dialog-illustration">✧</div><div class="eyebrow">A NEW PATH AWAITS</div><h2 id="portal-title">Ready for the next island?</h2>
+    <p id="portal-copy">Your choices will guide the next part of the specification. Your agent will research their implications before the portal opens.</p>
+    <button class="primary" id="research-next">Research & unlock <span>→</span></button>
+  </dialog>
+  <section id="pending" class="hud pending" hidden aria-live="polite"><div class="spinner"></div><div><strong id="pending-title">Your companions are researching…</strong><p id="pending-detail">The next part of your adventure is taking shape.</p><div class="pending-actions"><button id="retry">Retry request</button><button id="cancel">Cancel request</button></div></div></section>
+  <script type="module" src="./ui.js"></script>
+</body>
+</html>

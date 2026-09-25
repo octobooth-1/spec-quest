@@ -1,0 +1,7 @@
+{
+  "name": "spec-quest",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node --test store.test.mjs" },
+  "dependencies": { "three": "0.180.0" }
+}
